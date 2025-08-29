@@ -17,4 +17,7 @@
 
 <img width="1512" height="885" alt="image" src="https://github.com/user-attachments/assets/26bcadf8-5fd7-4134-bd31-0ace5671171b" width="100"/>
 
+在Assert路径下新建C#脚本 `SimplePosePlayer.cs`
+<img width="831" height="652" alt="image" src="https://github.com/user-attachments/assets/0227866b-d30e-446a-9905-47517fa15ed3" />
+
 
