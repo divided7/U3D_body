@@ -1,0 +1,61 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SimplePosePlayer : MonoBehaviour
+{
+    [Header("拖拽模型骨骼（25个）")]
+    public Transform[] joints;  // 25个骨骼Transform
+
+    [Header("动作帧设置")]
+    public int totalFrames = 100;     // 模拟帧数
+    public float frameTime = 0.033f;  // 每帧时间，大约30fps
+
+    private List<Vector3[]> frames;   // 模拟动作序列
+    private int currentFrame = 0;
+
+    void Start()
+    {
+        GenerateRandomFrames();
+        StartCoroutine(PlayAction());
+    }
+
+    // 随机生成动作序列
+    void GenerateRandomFrames()
+    {
+        frames = new List<Vector3[]>();
+        for(int f = 0; f < totalFrames; f++)
+        {
+            Vector3[] frame = new Vector3[25];
+            for(int i = 0; i < 25; i++)
+            {
+                // 模拟简单摆动
+                float angle = Mathf.Sin((f + i) * 0.1f) * 0.5f;
+                frame[i] = new Vector3(0, i * 0.2f, 0) + new Vector3(Mathf.Sin(angle), 0, Mathf.Cos(angle)) * 0.1f;
+            }
+            frames.Add(frame);
+        }
+    }
+
+    IEnumerator PlayAction()
+    {
+        while(true)
+        {
+            Vector3[] points = frames[currentFrame];
+
+            for(int i = 0; i < joints.Length - 1; i++)
+            {
+                Vector3 parentPos = points[i];
+                Vector3 childPos = points[i + 1];
+
+                Vector3 dir = (childPos - parentPos).normalized;
+
+                // 用 FromToRotation 从默认向上方向旋转到目标方向
+                joints[i].rotation = Quaternion.FromToRotation(Vector3.up, dir);
+            }
+
+            currentFrame = (currentFrame + 1) % frames.Count;
+            yield return new WaitForSeconds(frameTime);
+        }
+    }
+}
